@@ -61,6 +61,11 @@ RUN if [ -n "${CUDA_VERSION_FOR_COMFY}" ]; then \
 RUN if [ "$ENABLE_PYTORCH_UPGRADE" = "true" ]; then \
       uv pip install --force-reinstall torch torchvision torchaudio --index-url ${PYTORCH_INDEX_URL}; \
     fi
+# --- FaceDetailer custom nodes (ComfyUI-Impact-Pack + Impact-Subpack) ---
+RUN cd /comfyui/custom_nodes \
+    && git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Impact-Pack \
+    && git clone --depth 1 https://github.com/ltdrdata/ComfyUI-Impact-Subpack \
+    && uv pip install ultralytics
 
 # comfy-cli installs ComfyUI into its own workspace venv (/comfyui/.venv), but
 # start.sh launches ComfyUI with /opt/venv's python. That mismatch leaves the
@@ -166,6 +171,11 @@ RUN if [ "$MODEL_TYPE" = "z-image-turbo" ]; then \
       wget -q --header="Authorization: Bearer ${HUGGINGFACE_ACCESS_TOKEN}" -O models/vae/ae.safetensors https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/vae/ae.safetensors && \
       wget -q --header="Authorization: Bearer ${HUGGINGFACE_ACCESS_TOKEN}" -O models/model_patches/Z-Image-Turbo-Fun-Controlnet-Union.safetensors https://huggingface.co/alibaba-pai/Z-Image-Turbo-Fun-Controlnet-Union/resolve/main/Z-Image-Turbo-Fun-Controlnet-Union.safetensors; \
     fi
+    
+# --- FaceDetailer detector models (SAM + YOLO face) ---
+RUN mkdir -p models/sams models/ultralytics/bbox \
+    && wget -q -O models/sams/sam_vit_b_01ec64.pth https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth \
+    && wget -q -O models/ultralytics/bbox/yolov12l-face.pt "https://huggingface.co/spaces/RevDra/YOLOv12_HFD/resolve/main/models/yolov12l-face.pt"
 
 # Stage 3: Final image
 FROM base AS final
