@@ -172,7 +172,7 @@ RUN if [ "$MODEL_TYPE" = "z-image-turbo" ]; then \
       wget -q --header="Authorization: Bearer ${HUGGINGFACE_ACCESS_TOKEN}" -O models/model_patches/Z-Image-Turbo-Fun-Controlnet-Union.safetensors https://huggingface.co/alibaba-pai/Z-Image-Turbo-Fun-Controlnet-Union/resolve/main/Z-Image-Turbo-Fun-Controlnet-Union.safetensors; \
     fi
     
-# --- FaceDetailer detector models (SAM + YOLO face) ---
+# --- FaceDetailer detector models (SAM + YOLO face) --- 
 RUN mkdir -p models/sams models/ultralytics/bbox \
     && wget -q -O models/sams/sam_vit_b_01ec64.pth https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth \
     && wget -q -O models/ultralytics/bbox/yolov12l-face.pt "https://huggingface.co/spaces/RevDra/YOLOv12_HFD/resolve/main/models/yolov12l-face.pt"
